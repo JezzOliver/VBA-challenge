@@ -1,0 +1,114 @@
+Sub StocksMYSD1()
+'works on test data
+'define variables
+Dim TickerName As String
+Dim NameCount As Integer
+Dim RowTot As Long
+Dim i As Long
+
+'Determine number of rows
+RowTot = Range("A1").End(xlDown).Row
+Range("ab2").Value = RowTot - 1
+
+'Find ticker nmaes
+For i = 1 To RowTot
+Dim CurrTick As String
+Dim NextTick As String
+CurrTick = Cells(i, 1).Value
+NextTick = Cells(i + 1, 1).Value
+Dim Comparison As Boolean
+Comparison = StrComp(CurrTick, NextTick)
+
+If Comparison <> 0 Then
+
+'add loop to calculate tickername count, mostly works on testing file but crashes stock data
+'Dim j As Long
+'For j = 1 To RowTot
+
+
+'If Cells(j, 1) = NextTick Then
+            'Cells(i + 1, 26).Value = 1
+            'Dim TickernameCount As Long
+            
+            'TickernameCount = TickernameCount + 1
+            'YearlyStock = YearlyStock + Cells(j + 1, 7).Value
+            
+        'End If
+    'Next j
+
+
+'Output
+NameCount = 1 + NameCount
+TickerName = Cells(i + 1, 1).Value
+Cells(NameCount + 1, 9).Value = TickerName
+Cells(1, 9).Value = "Ticker"
+
+
+'showing value of i to help troubleshoot and help calculate 251
+'Cells(NameCount + 1, 18).Value = i
+
+'calculate difference use 251 not 253
+'change formaula for final P to use TickernameCount
+Dim StartP As Double
+Dim FinalP As Double
+Dim YrPriceChange As Double
+Dim YearlyStock As Long
+Dim Yrange As Range
+StartP = Cells(i + 1, 3).Value
+FinalP = Cells(i + 251, 6).Value
+YrPriceChange = FinalP - StartP
+Cells(NameCount + 1, 10).Value = YrPriceChange
+
+'Helper values to help fix errors - turned off
+'Cells(NameCount + 1, 15).Value = StartP
+'Cells(NameCount + 1, 14).Value = FinalP
+'Cells(NameCount + 1, 16).Value = TickernameCount
+
+Cells(NameCount + 1, 12).Value = Application.Sum(Range(Cells(i + 1, 7), Cells(i + 251, 7)))
+'wrong from second stock onwards
+
+'Calculate and ouput percentage change from opeing price)
+'added if to remove error
+
+If StartP = 0 Then
+Cells(NameCount + 1, 11) = "0"
+Else
+Cells(NameCount + 1, 11).Value = (YrPriceChange / StartP)
+
+Cells(1, 10).Value = "Yearly Change"
+Cells(1, 11).Value = "Percent Change"
+Cells(1, 12).Value = "Total Stock Volume"
+
+'Cells(NameCount + 1, 11) = PercentChange
+Cells(NameCount + 1, 11).NumberFormat = "#.00%"
+'cell colour red for decrease and green for increase
+If YrPriceChange < 0 Then
+Cells(NameCount + 1, 10).Interior.ColorIndex = 3
+ElseIf YrPriceChange > 0 Then
+Cells(NameCount + 1, 10).Interior.ColorIndex = 4
+
+
+End If
+End If
+End If
+
+'get ticket count to reset so next i will not add to value
+'TickernameCount = 0
+
+
+Next i
+
+'Bonus
+Range("o2") = "Greatest % Increase"
+Range("o3") = "Greatest % Decrease"
+Range("o4") = "Greatest Total Volume"
+Range("p1") = "Ticker"
+Range("q1") = "Value"
+Range("q2") = Application.WorksheetFunction.Max(Range("k:k"))
+Range("q3") = Application.WorksheetFunction.Min(Range("k:k"))
+Range("q4") = Application.WorksheetFunction.Max(Range("l:l"))
+Range("Q2").NumberFormat = "#.00%"
+Range("Q3").NumberFormat = "#.00%"
+
+
+End Sub
